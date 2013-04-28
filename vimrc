@@ -18,6 +18,7 @@ Bundle "ttcn-ftplugin"
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
+Bundle "bash-support.vim"
 
 " syntax highlighting
 syntax on
