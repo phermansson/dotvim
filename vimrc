@@ -20,6 +20,7 @@ Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
 Bundle "bash-support.vim"
+Bundle "a.vim"
 
 " syntax highlighting
 syntax on
