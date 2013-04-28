@@ -5,6 +5,7 @@ filetype off
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
+" Bundle addons
 Bundle 'gmarik/vundle'
 Bundle "derekwyatt/vim-scala"
 Bundle "altercation/vim-colors-solarized"
@@ -36,6 +37,7 @@ set laststatus=2
 " Map nerdtree to f2
 map <F2> :NERDTreeToggle<CR>
 
+" == Python mode starts here == 
 " Python-mode
 let g:pymode_rope = 1
 
@@ -64,11 +66,12 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 
 " Don't autofold code
 let g:pymode_folding = 0
+" == Python mode ends here
 
 " Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>                                                                                                                       
-nmap <silent> <c-j> :wincmd j<CR>                                                                                                                       
-nmap <silent> <c-h> :wincmd h<CR>                                                                                                                       
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>               
 nmap <silent> <c-l> :wincmd l<CR>
 
 set tabstop=4
