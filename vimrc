@@ -21,6 +21,8 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
 Bundle "bash-support.vim"
 Bundle "a.vim"
+Bundle "taglist.vim"
+Bundle "ctags.vim"
 
 " syntax highlighting
 syntax on
@@ -30,6 +32,14 @@ syntax sync fromstart
 filetype indent on
 filetype plugin on
 filetype plugin indent on
+
+set tags=./tags,tags;
+let g:clang_complete_copen=1
+let g:clang_hl_errors=1
+let g:clang_use_library = 1
+let g:clang_library_path = "/home/eherpat/packages/llvm-3.2/lib/"
+nnoremap t <C-]>
+nnoremap <F3> :TlistOpen<CR>
 
 " setup Powerline
 set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
@@ -97,6 +107,9 @@ let g:solarized_visibility="high"
 let g:solarized_contrast="high"
 colorscheme solarized
 
+" Improve drawing speed
+set lazyredraw
+set ttyfast
 
 au BufRead,BufNewFile * match BadWhitespace /\s\+$/
 " Display tabs at the beginning of a line in Python mode as bad.
