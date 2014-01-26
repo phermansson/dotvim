@@ -7,20 +7,23 @@ call vundle#rc()
 
 " Bundle addons
 Bundle 'gmarik/vundle'
-Bundle "derekwyatt/vim-scala"
-Bundle "altercation/vim-colors-solarized"
-Bundle "https://github.com/scrooloose/syntastic"
-Bundle "ccase.vim"
-Bundle "Rip-Rip/clang_complete"
-Bundle "ttcn-syntax"
-Bundle "ttcn-indent"
-Bundle "ttcn-dict"
-Bundle "ttcn-ftplugin"
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'https://github.com/scrooloose/syntastic'
+Bundle 'ccase.vim'
+"Bundle 'Rip-Rip/clang_complete'
+Bundle 'ttcn-syntax'
+Bundle 'ttcn-indent'
+Bundle 'ttcn-dict'
+Bundle 'ttcn-ftplugin'
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
-Bundle "bash-support.vim"
-Bundle "a.vim"
+Bundle 'bash-support.vim'
+Bundle 'a.vim'
+Bundle 'derekwyatt/vim-scala'
+Bundle 'Twinside/vim-codeoverview'
+Bundle 'Valloric/YouCompleteMe'
+Bundle 'Syntastic'
 
 " syntax highlighting
 syntax on
@@ -101,3 +104,25 @@ colorscheme solarized
 au BufRead,BufNewFile * match BadWhitespace /\s\+$/
 " Display tabs at the beginning of a line in Python mode as bad.
 au BufRead,BufNewFile *.py,*.pyw 2match BadWhitespace /^\t\+/
+
+" YCM
+let g:ycm_register_as_syntastic_checker = 1
+let g:ycm_add_preview_to_completeopt = 1
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_seed_identifiers_with_syntax = 1
+let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
+let g:ycm_key_invoke_completion = '<C-@>'
+
+" syntastic
+let g:syntastic_enable_balloons = 1
+let g:syntastic_auto_loc_list=2
+let g:syntastic_auto_jump=0
+let g:syntastic_enable_signs=1
+let g:syntastic_error_symbol='✗'
+let g:syntastic_warning_symbol='⚠'
+
+" Ctags function stack
+nmap <M-h> <C-T>
+nmap <M-l> <C-]>
