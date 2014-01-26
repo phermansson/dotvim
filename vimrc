@@ -25,6 +25,8 @@ Bundle 'Twinside/vim-codeoverview'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'Syntastic'
 
+:set tags=./tags;~/Projects
+
 " syntax highlighting
 syntax on
 syntax sync fromstart
@@ -78,6 +80,9 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>               
 nmap <silent> <c-l> :wincmd l<CR>
 
+nmap <silent> <c-x>c :execute "!ctags -R --fields=+l "
+nmap <silent> <c-x>s :execute "cscope -r"
+
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -124,5 +129,36 @@ let g:syntastic_error_symbol='✗'
 let g:syntastic_warning_symbol='⚠'
 
 " Ctags function stack
-nmap <M-h> <C-T>
-nmap <M-l> <C-]>
+nmap <c-n> <C-T>
+nmap <c-m> <C-]>
+
+"cscope options
+if has("cscope")
+        set csto=0                      " First search cscope database, then ctag file 
+        set cst                         " Always use cscope instead of ctag
+        set nocsverb                    " Don't be verbose
+        if filereadable("cscope.out")
+                cs add cscope.out
+        elseif $CSCOPE_DB != ""
+                cs add $CSCOPE_DB
+        endif
+        set csverb
+        nmap <C-c>s :cs find s <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-c>g :cs find g <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-c>c :cs find c <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-c>t :cs find t <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-c>e :cs find e <C-R>=expand("<cword>")<CR><CR> 
+        nmap <C-c>f :cs find f <C-R>=expand("<cfile>")<CR><CR> 
+        nmap <C-c>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+        nmap <C-c>d :cs find d <C-R>=expand("<cword>")<CR><CR>
+        " Opens the tag in a new window on the right
+        nmap <C-c>S :rightb vert scs find s <C-R>=expand("<cword>")<CR><CR>
+        nmap <C-c>G :rightb vert scs find g <C-R>=expand("<cword>")<CR><CR>
+        nmap <C-c>C :rightb vert scs find c <C-R>=expand("<cword>")<CR><CR>
+        nmap <C-c>T :rightb vert scs find t <C-R>=expand("<cword>")<CR><CR>
+        nmap <C-c>E :rightb vert scs find e <C-R>=expand("<cword>")<CR><CR>
+        nmap <C-c>F :rightb vert scs find f <C-R>=expand("<cfile>")<CR><CR>
+        nmap <C-c>I :rightb vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
+        nmap <C-c>D :rightb vert scs find d <C-R>=expand("<cword>")<CR><CR>
+ 
+endif
