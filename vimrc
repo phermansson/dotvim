@@ -119,7 +119,7 @@ let g:ycm_seed_identifiers_with_syntax = 1
 let g:ycm_key_list_select_completion = ['<C-j>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-k>', '<Up>']
 let g:ycm_key_invoke_completion = '<C-@>'
-
+let g:ycm_global_ycm_extra_conf = '~/.vim/bundle/YouCompleteMe/cpp/ycm/.ycm_extra_conf.py'
 " syntastic
 let g:syntastic_enable_balloons = 1
 let g:syntastic_auto_loc_list=2
