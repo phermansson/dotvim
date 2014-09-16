@@ -8,6 +8,8 @@ call vundle#rc()
 " Bundle addons
 Bundle 'gmarik/vundle'
 Bundle 'altercation/vim-colors-solarized'
+Bundle 'desert-warm-256'
+Bundle 'chriskempson/tomorrow-theme', {'rtp': 'vim/'}
 Bundle 'https://github.com/scrooloose/syntastic'
 Bundle 'ccase.vim'
 Bundle 'ttcn-syntax'
@@ -23,9 +25,15 @@ Bundle 'bash-support.vim'
 Bundle 'a.vim'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Twinside/vim-codeoverview'
-Bundle 'Syntastic'
-Bundle 'bling/vim-airline'
-Bundle 'jistr/vim-nerdtree-tabs'
+"Bundle 'Valloric/YouCompleteMe'
+"Bundle 'Syntastic'
+""" More Bundles
+Bundle 'nvie/vim-flake8'
+Bundle 'ervandew/supertab'
+Bundle 'davidhalter/jedi-vim'
+Bundle 'vim-scripts/csv.vim'
+Bundle 'kien/ctrlp.vim'
+:set tags=./tags;~/Projects
 
 " == Vim general settings
 set tags=./tags;~/Projects
@@ -93,13 +101,11 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 " Don't autofold code
 let g:pymode_folding = 0
 
-" == TabList settings
-nnoremap <F3> :TlistToggle<CR>
-let Tlist_Use_Right_Window=1
-let Tlist_GainFocus_On_ToggleOpen = 1
-let Tlist_WinWidth = 40
-let Tlist_File_Fold_Auto_Close = 1
-let Tlist_Show_One_File = 1
+" Use ctrl-[hjkl] to select the active split!
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
 
 " == NerdTree
 map <F2> :NERDTreeToggle<CR>
