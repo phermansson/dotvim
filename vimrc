@@ -18,16 +18,12 @@ Bundle 'ttcn-dict'
 Bundle 'ttcn-ftplugin'
 Bundle 'scrooloose/nerdtree'
 Bundle 'klen/python-mode'
-Bundle "bash-support.vim"
 Bundle "taglist.vim"
 Bundle "ctags.vim"
 Bundle 'bash-support.vim'
 Bundle 'a.vim'
 Bundle 'derekwyatt/vim-scala'
 Bundle 'Twinside/vim-codeoverview'
-"Bundle 'Valloric/YouCompleteMe'
-"Bundle 'Syntastic'
-""" More Bundles
 Bundle 'nvie/vim-flake8'
 Bundle 'ervandew/supertab'
 Bundle 'davidhalter/jedi-vim'
@@ -58,11 +54,7 @@ set backspace=indent,eol,start
 " Use the below highlight group when displaying bad whitespace.
 highlight BadWhitespace ctermbg=red guibg=red
 set background=dark
-let g:solarized_termtrans=1
-let g:solarized_termcolors=256
-let g:solarized_visibility="high"
-let g:solarized_contrast="high"
-colorscheme solarized
+colorscheme Tomorrow-Night
 " Improve drawing speed
 set lazyredraw
 set ttyfast
@@ -78,6 +70,7 @@ nmap <silent> <c-l> :wincmd l<CR>
 " show trailing white space
 set list
 set listchars=tab:→→,extends:>,precedes:<
+
 " == Python mode
 let g:pymode_rope = 1
 " Documentation
