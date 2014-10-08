@@ -2,7 +2,8 @@
 
 " Setup Vundle
 filetype off
-set rtp+=~/.vim/bundle/vundle/
+set nocompatible " be iMproved, required
+set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#rc()
 
 " Bundle addons
@@ -29,6 +30,14 @@ Bundle 'ervandew/supertab'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'vim-scripts/csv.vim'
 Bundle 'kien/ctrlp.vim'
+Bundle 'tpope/vim-fugitive'
+Bundle 'rhysd/git-messenger.vim'
+Bundle 'tommcdo/vim-fugitive-blame-ext'
+Bundle 'mhinz/vim-signify'
+Bundle 'mhinz/vim-startify'
+Bundle 'bling/vim-airline'
+Bundle 'mileszs/ack.vim' 
+
 :set tags=./tags;~/Projects
 
 " == Vim general settings
@@ -61,6 +70,8 @@ set ttyfast
 au BufRead,BufNewFile * match BadWhitespace /\s\+$/
 " Display tabs at the beginning of a line in Python mode as bad.
 au BufRead,BufNewFile *.py,*.pyw 2match BadWhitespace /^\t\+/
+
+let g:ackprg = "ag --nogroup --column --smart-case --follow"
 
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
@@ -102,8 +113,8 @@ nmap <silent> <c-l> :wincmd l<CR>
 
 " == NerdTree
 map <F2> :NERDTreeToggle<CR>
-let NERDTreeMapOpenInTab='<ENTER>'
-
+"map <C-g>m :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
+vmap <Leader>g :<C-U>!git blame <C-R>=expand("%:p") <CR> \| sed -n <C-R>=line("'<") <CR>,<C-R>=line("'>") <CR>p <CR>
 " == Ctags
 map <silent> <c-x>c :execute "!ctags -R --fields=+l "
 nmap <silent> <c-x>s :execute "cscope -r"
