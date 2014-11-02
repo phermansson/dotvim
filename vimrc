@@ -50,6 +50,7 @@ syntax sync fromstart
 filetype indent on
 filetype plugin on
 filetype plugin indent on
+" General settings
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -58,6 +59,18 @@ set autoindent
 set number
 set scrolloff=4
 set hlsearch
+nmap \q :nohlsearch<CR>
+set smartcase
+set ignorecase
+set incsearch
+
+" Back to previous buffer 
+nmap <C-e> :e#<CR>
+
+" Switch between buffers
+nmap <C-n> :bnext<CR>
+nmap <C-p> :bprev<CR>
+
 " Make the backspace key behave normally
 set backspace=indent,eol,start
 " Use the below highlight group when displaying bad whitespace.
@@ -72,15 +85,23 @@ au BufRead,BufNewFile * match BadWhitespace /\s\+$/
 au BufRead,BufNewFile *.py,*.pyw 2match BadWhitespace /^\t\+/
 
 let g:ackprg = "ag --nogroup --column --smart-case --follow"
+" Toggle line number on and off
+nmap \l :setlocal number!<CR>
+" Enter paste mode
+nmap \o :set paste!<CR>
+" move complete line 
+nmap j gj
+nmap k gk
 
-" Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
-" show trailing white space
-set list
-set listchars=tab:→→,extends:>,precedes:<
+" Detect 256 colors
+if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    set t_Co=256
+endif
+
+" Wrapping mode 
+nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
+
+" == PLUGINS == "
 
 " == Python mode
 let g:pymode_rope = 1
@@ -104,12 +125,6 @@ let g:pymode_syntax_indent_errors = g:pymode_syntax_all
 let g:pymode_syntax_space_errors = g:pymode_syntax_all
 " Don't autofold code
 let g:pymode_folding = 0
-
-" Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
 
 " == NerdTree
 map <F2> :NERDTreeToggle<CR>
@@ -155,3 +170,15 @@ if has("cscope")
  " == Airline
 set laststatus=2
 let g:airline_powerline_fonts = 1
+
+" == CtrlP
+nmap ; :CtrlPBuffer<CR>
+let g:ctrlp_map = '<Leader>t'
+let g:ctrlp_match_window_bottom = 0
+let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|__init__\.py'
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_switch_buffer = 0
+
+
