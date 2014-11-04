@@ -37,7 +37,6 @@ NeoBundle 'Shougo/vimproc.vim',
 \ }
 
 NeoBundle 'Shougo/neosnippet.vim'
-NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'hewes/unite-gtags'
 NeoBundle 'majutsushi/tagbar'
 NeoBundle 'scrooloose/nerdtree'
@@ -58,8 +57,16 @@ NeoBundle 'mhinz/vim-signify'
 NeoBundle 'mhinz/vim-startify'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'tsukkee/unite-tag'
+NeoBundle 'minibufexpl.vim'
+
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplete'
+NeoBundle 'Shougo/neosnippet'
+NeoBundle 'Shougo/unite-outline'
 
 call neobundle#end()
+
+
 " Required:
 filetype plugin indent on
 " If there are uninstalled bundles found on startup,
@@ -78,9 +85,16 @@ let g:ctrlp_switch_buffer = 'Et' " jump to opened window (if any)
 set laststatus=2
 let g:airline_powerline_fonts = 1
 
+" MiniBufExplorer {{{
+nnoremap <silent> <F3> :TMiniBufExplorer<CR>
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplMapWindowNavArrows = 1
+let g:miniBufExplMapCTabSwitchBuffs = 1
+" }}} / MiniBufExplorer
+"
 "==== Unite ====
 nnoremap [unite] <Nop>
-nmap <space> [unite]
+nmap <Leader><Leader> [unite]
 
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " Start insert mode in unite-action buffer.
@@ -101,10 +115,6 @@ nnoremap [unite]s :<C-u>Unite neosnippet<CR>
 " Unite: unite-source-grep
 let g:unite_source_grep_max_candidates = 200
 if executable('ag')
-
-" unite natviagation
-imap <buffer> <C-j>   <Plug>(unite_select_next_line)
-imap <buffer> <C-k>   <Plug>(unite_select_previous_line)
 
 " Use ag in unite grep source.
 let g:unite_source_grep_command = 'ag'
@@ -140,6 +150,8 @@ nnoremap [unite]gr :<C-u>Unite gtags/ref<CR>
 nnoremap [unite]gd :<C-u>Unite gtags/def<CR>
 nnoremap [unite]gg :<C-u>Unite gtags/grep<CR>
 nnoremap [unite]gc :<C-u>Unite gtags/completion<CR>
+
+map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -auto-preview -start-insert tag<cr>
 
 " NERDCommenter
 " Map <C-/> to toggle comment both in normal and visual mode
@@ -202,6 +214,30 @@ autocmd BufReadPost *
 \ exe "normal g`\"" |
 \ endif
 
+"==== find gtags path"
+let search_max = 20 
+if exists("$GTAGSGLOBAL") || exists(":global")
+  if exists("vimrc_debug") && vimrc_debug == 1
+    echo "Searching GPATH, GTAGS, and GRTAGS ..."
+  endif
+  let s:dir = fnamemodify(getcwd(), ":p:h")
+  let i = 1
+  while i <= search_max
+    if exists("vimrc_debug") && vimrc_debug == 1
+      echo s:dir
+    endif
+    if filereadable(s:dir . "/GPATH") && filereadable(s:dir . "/GTAGS") && filereadable(s:dir . "/GRTAGS")
+      let $GTAGSROOT = s:dir
+      let GtagsCscope_Auto_Load = 1
+      break
+    elseif s:dir == '/'
+      break
+    else
+      let s:dir = fnamemodify(s:dir, ":h")
+      let i += 1
+    endif
+  endwhile
+endif
 
 " ==== Cscope options =====
  
@@ -257,19 +293,31 @@ autocmd BufReadPost *
  nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
+"
+nmap <Leader>n  :bprev<CR>
+nmap <Leader>m  :bnext<CR>
+nmap <Leader>d :bd<CR>
+nmap <Leader>f :b
+
+" Use ctrl-[hjkl] to select the active split!
+nmap <silent> <c-k> :wincmd k<CR>
+nmap <silent> <c-j> :wincmd j<CR>
+nmap <silent> <c-h> :wincmd h<CR>
+nmap <silent> <c-l> :wincmd l<CR>
+
 " Quickly edit/reload the vimrc file
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
-" Latex file encoding
-" autocmd FileType plaintex setlocal fileencoding=utf8
-" File encoding
+
 set encoding=utf8
+
 " Appearance
 syntax on
 set hlsearch
 if has("gui_macvim")
 set guifont=Menlo:h12
 endif
+
 " Colorscheme
 if $COLORTERM == 'gnome-terminal'
 set t_Co=256
