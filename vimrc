@@ -1,5 +1,5 @@
 
-" Bundle if not available
+""" Setup-neo-bundle -----------------------------------------------------------
 let neoBundleReadMe=expand('~/.vim/bundle/neobundle.vim/README.md')
 if !filereadable(neoBundleReadMe)
   echo "Fetch and install NeoBundle...\n"
@@ -23,8 +23,7 @@ if system('uname -o') =~ '^GNU/'
   let g:make = 'make'
 endif
 
-
-" ==== My Bundles here =====
+""" Bundles --------------------------------------------------------------------
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'Shougo/unite.vim'
@@ -64,44 +63,45 @@ NeoBundle 'Shougo/neocomplete'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'Shougo/unite-outline'
 
+NeoBundle 'ntpeters/vim-better-whitespace'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'kien/rainbow_parentheses.vim'
+
+""" neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
-
-
 " Required:
 filetype plugin indent on
-" If there are uninstalled bundles found on startup,
-" this will conveniently prompt you to install them.
 NeoBundleCheck
 let mapleader = ","
 
-" Window configurations:
-" position:bottom
-" order (of results):top to bottom (ttb)
-let g:ctrlp_match_window = 'bottom,order:ttb'
-let g:ctrlp_working_path_mode = '' " working path won't change when opening new files
-let g:ctrlp_switch_buffer = 'Et' " jump to opened window (if any)
-
-" === airline ===
+""" airline --------------------------------------------------------------------
 set laststatus=2
 let g:airline_powerline_fonts = 1
 
-" MiniBufExplorer {{{
+""" MiniBufExplorer ------------------------------------------------------------
 nnoremap <silent> <F3> :TMiniBufExplorer<CR>
-let g:miniBufExplMapWindowNavVim = 1
-let g:miniBufExplMapWindowNavArrows = 1
 let g:miniBufExplMapCTabSwitchBuffs = 1
-" }}} / MiniBufExplorer
-"
-"==== Unite ====
+let g:miniBufExplModSelTarget = 1
+let g:miniBufExplorerMoreThanOne = 0
+let g:miniBufExplModSelTarget = 0
+let g:miniBufExplUseSingleClick = 1
+let g:miniBufExplMapWindowNavVim = 1
+let g:miniBufExplVSplit = 25
+let g:miniBufExplSplitBelow=1
+
+""" Unite ----------------------------------------------------------------------
 nnoremap [unite] <Nop>
 nmap <Leader><Leader> [unite]
 
-call unite#filters#matcher_default#use(['matcher_fuzzy'])
+"call unite#filters#matcher_default#use(['matcher_fuzzy'])
+call unite#filters#sorter_default#use(['sorter_rank'])
+call unite#custom#profile('files', 'filters', ['sorter_rank'])
+
 " Start insert mode in unite-action buffer.
-call unite#custom#profile('action', 'context', {
-  \ 'start_insert' : 1,
-  \ 'smartcase' : 1
-\ })
+"call unite#custom#profile('action', 'context', {
+"  \ 'start_insert' : 1,
+"  \ 'smartcase' : 1
+"\ })
 
 nnoremap [unite]f :<C-u>Unite -start-insert file_rec/async:!<CR>
 
@@ -151,14 +151,20 @@ nnoremap [unite]gd :<C-u>Unite gtags/def<CR>
 nnoremap [unite]gg :<C-u>Unite gtags/grep<CR>
 nnoremap [unite]gc :<C-u>Unite gtags/completion<CR>
 
+nnoremap [unite]gX :<C-u>Unite gtags/context:
+nnoremap [unite]gR :<C-u>Unite gtags/ref:
+nnoremap [unite]gD :<C-u>Unite gtags/def:
+nnoremap [unite]gG :<C-u>Unite gtags/grep:
+nnoremap [unite]gC :<C-u>Unite gtags/completion:
+
 map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -auto-preview -start-insert tag<cr>
 
-" NERDCommenter
+""" NerdCommenter --------------------------------------------------------------
 " Map <C-/> to toggle comment both in normal and visual mode
 nmap  <plug>NERDCommenterToggle
 vmap  <plug>NERDCommenterToggle
 
-" Tabularize
+""" Tabularize -----------------------------------------------------------------
 nmap <silent> <leader>a= :<C-u>Tabularize /=<CR>
 vmap <silent> <leader>a= :<C-u>Tabularize /=<CR>
 nmap <silent> <leader>a: :<C-u>Tabularize /:<CR>
@@ -168,43 +174,23 @@ vmap <silent> <leader>a:: :<C-u>Tabularize /:\zs<CR>
 nmap <silent> <leader>a, :<C-u>Tabularize /,<CR>
 vmap <silent> <leader>a, :<C-u>Tabularize /,<CR>
 
-" NERDTree
+""" NerdTree -------------------------------------------------------------------
 nnoremap <silent> <F2> :NERDTreeToggle<CR>
 
-" Tagbar
+""" Tagbar ---------------------------------------------------------------------
 let g:tagbar_sort = 0 " Display tags the same order they appear in the source file
 let g:tagbar_width = 30 " Set Tagbar window width to 30
 let g:tagbar_autofocus = 1 " Change the focus to the Tagbar window whenever it is opened
 nnoremap <silent> <F9> :TagbarToggle<CR>
 
-" Fugitive
+""" Fugitive -------------------------------------------------------------------
 set diffopt=filler,vertical
 nmap <silent> <leader>gc :Gcommit<CR>
 nmap <silent> <leader>gd :Gdiff<CR>
 nmap <silent> <leader>gp :Git push<CR>
 nmap <silent> <leader>gs :Gstatus<CR>
 
-" YouCompleteMe
-" let g:clang_library_path = '/home/likewise-open/CERTI/llf/.vim/bundle/YouCompleteMe/third_party/ycmd'
-" let g:clang_use_library=1
-" let g:ycm_extra_conf_globlist = ['~/ProjectsRemote/*','!~/*']
-" clang-format
-" style_options: http://clang.llvm.org/docs/ClangFormatStyleOptions.html
-let g:clang_format#command = "clang-format-3.5"
-let g:clang_format#code_style = "google"
-let g:clang_format#style_options = {
-\ "AccessModifierOffset" : -1,
-\ "AlwaysBreakTemplateDeclarations" : "true",
-\ "Standard" : "C++03"}
-" \ "UseTab" : "ForIndentation"}
-" \ "SpaceAfterCStyleCast" : "true",
-" map to <Leader>cf in C++ code
-autocmd FileType c,cpp,objc nnoremap <buffer><Leader>cf :<C-u>ClangFormat<CR>
-autocmd FileType c,cpp,objc vnoremap <buffer><Leader>cf :ClangFormat<CR>
-" if you install vim-operator-user
-autocmd FileType c,cpp,objc map <buffer><Leader>x <Plug>(operator-clang-format)
-
-" a.vim
+""" a.vim ----------------------------------------------------------------------
 map <silent> <C-Tab> :A<CR>
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
@@ -214,8 +200,8 @@ autocmd BufReadPost *
 \ exe "normal g`\"" |
 \ endif
 
-"==== find gtags path"
-let search_max = 20 
+""" Gtags-find -----------------------------------------------------------------
+let search_max = 20
 if exists("$GTAGSGLOBAL") || exists(":global")
   if exists("vimrc_debug") && vimrc_debug == 1
     echo "Searching GPATH, GTAGS, and GRTAGS ..."
@@ -239,9 +225,7 @@ if exists("$GTAGSGLOBAL") || exists(":global")
   endwhile
 endif
 
-" ==== Cscope options =====
- 
- " GNU global has higher priority than cscope
+""" Cscope-settings ------------------------------------------------------------
  if filereadable("GTAGS")
      set csprg=gtags-cscope
      cs add GTAGS
@@ -251,10 +235,9 @@ endif
  elseif $CSCOPE_DB !=""
      cs add $CSCOPE_DB
  endif
- 
+
  set csto=0
  set cscopeverbose
- 
  " key mapping
  map <S-F11> <ESC>:cs add cscope.out<CR>
  map <C-F11> <ESC>:cscope find
@@ -293,40 +276,43 @@ endif
  nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
-"
+""" Basic-keybindings  --------------------------------------------------------
+command Bd bp | sp | bn | bd
+
 nmap <Leader>n  :bprev<CR>
 nmap <Leader>m  :bnext<CR>
-nmap <Leader>d :bd<CR>
-nmap <Leader>f :b
+nmap <Leader>d  :Bd<CR>
+nmap <Leader>f  :b
 
+map <leader>tn :tabnew %<cr>
+map <leader>tc :tabclose<cr>
+map <leader>tm :tabmove
 " Use ctrl-[hjkl] to select the active split!
 nmap <silent> <c-k> :wincmd k<CR>
 nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
-
 " Quickly edit/reload the vimrc file
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-set encoding=utf8
-
-" Appearance
+""" Appearance ----------------------------------------------------------------
 syntax on
+set encoding=utf8
 set hlsearch
 if has("gui_macvim")
 set guifont=Menlo:h12
 endif
 
-" Colorscheme
+""" Color-scheme --------------------------------------------------------------
 if $COLORTERM == 'gnome-terminal'
 set t_Co=256
 endif
 set background=dark
-
 colorscheme Tomorrow-Night
 
-set backspace=indent,eol,start " allow backspacing over everything in insert mode
+""" Basic-settings ------------------------------------------------------------
+set backspace=indent,eol,start
 set history=50 " keep 50 lines of command line history
 set ruler " show the cursor position all the time
 set showcmd " display incomplete commands
@@ -339,7 +325,21 @@ set wildmode=longest,list " TAB completion (such as bash)
 set laststatus=2 " Always show a status bar
 set smartcase " Ignore case when search pattern is all lowercase
 set shiftwidth=2 " # of spaces of auto indent
-set softtabstop=2 " # of spaces of <TAB> key
-set tabstop=2 " # of spaces erased when deleting a <TAB>
+set softtabstop=4 " # of spaces of <TAB> key
+set tabstop=4 " # of spaces erased when deleting a <TAB>
 set expandtab " Insert spaces instead of tabs
 set smarttab " 'siftwidth' in front of a line
+
+""" Vim-Indent-Guides ---------------------------------------------------------
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
+highlight IndentGuidesOdd ctermbg=236 guibg=#3a3a3a
+highlight IndentGuidesEven ctermbg=236 guibg=#3a3a3a
+au VimEnter * :IndentGuidesEnable
+
+""" Vim-Rainbow-Parentheses ---------------------------------------------------
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
