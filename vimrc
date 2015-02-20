@@ -58,7 +58,7 @@ NeoBundle 'bling/vim-airline'
 NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'minibufexpl.vim'
 
-NeoBundle 'Shougo/neocomplcache'
+"NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplete'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'Shougo/unite-outline'
@@ -66,7 +66,11 @@ NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kien/rainbow_parentheses.vim'
+NeoBundle 'int3/vim-extradite'
 
+NeoBundle "davidhalter/jedi-vim"
+NeoBundle 'xolox/vim-misc'
+NeoBundle 'xolox/vim-easytags'
 """ neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
 " Required:
@@ -80,7 +84,13 @@ let g:airline_powerline_fonts = 1
 
 """ MiniBufExplorer ------------------------------------------------------------
 nnoremap <silent> <F3> :TMiniBufExplorer<CR>
-let g:miniBufExplMapCTabSwitchBuffs = 1
+"let g:miniBufExplMapCTabSwitchBuffs = 1
+"let g:miniBufExplModSelTarget = 1
+"let g:miniBufExplorerMoreThanOne = 0
+"let g:miniBufExplModSelTarget = 0
+"let g:miniBufExplUseSingleClick = 1
+"let g:miniBufExplMapWindowNavVim = 1
+
 let g:miniBufExplModSelTarget = 1
 let g:miniBufExplorerMoreThanOne = 0
 let g:miniBufExplModSelTarget = 0
@@ -157,12 +167,19 @@ nnoremap [unite]gD :<C-u>Unite gtags/def:
 nnoremap [unite]gG :<C-u>Unite gtags/grep:
 nnoremap [unite]gC :<C-u>Unite gtags/completion:
 
+nnoremap [unite]gs :GtagsCursor<CR>
+
 map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -auto-preview -start-insert tag<cr>
 
 """ NerdCommenter --------------------------------------------------------------
 " Map <C-/> to toggle comment both in normal and visual mode
 nmap  <plug>NERDCommenterToggle
 vmap  <plug>NERDCommenterToggle
+
+""" Easytags -------------------------------------------------------------------
+let g:easytags_cmd = "gtags"
+let g:easytags_dynamic_files = 1
+let g:easytags_async = 1
 
 """ Tabularize -----------------------------------------------------------------
 nmap <silent> <leader>a= :<C-u>Tabularize /=<CR>
@@ -176,7 +193,7 @@ vmap <silent> <leader>a, :<C-u>Tabularize /,<CR>
 
 """ NerdTree -------------------------------------------------------------------
 nnoremap <silent> <F2> :NERDTreeToggle<CR>
-
+":let NERDTreeQuitOnOpen = 1
 """ Tagbar ---------------------------------------------------------------------
 let g:tagbar_sort = 0 " Display tags the same order they appear in the source file
 let g:tagbar_width = 30 " Set Tagbar window width to 30
@@ -279,8 +296,8 @@ endif
 """ Basic-keybindings  --------------------------------------------------------
 command Bd bp | sp | bn | bd
 
-nmap <Leader>n  :bprev<CR>
-nmap <Leader>m  :bnext<CR>
+nmap <Leader>n  :MBEbp<CR>
+nmap <Leader>m  :MBEbn<CR>
 nmap <Leader>d  :Bd<CR>
 nmap <Leader>f  :b
 
@@ -324,7 +341,7 @@ set scrolloff=1 " Keep the cursor away from top/bottom
 set wildmode=longest,list " TAB completion (such as bash)
 set laststatus=2 " Always show a status bar
 set smartcase " Ignore case when search pattern is all lowercase
-set shiftwidth=2 " # of spaces of auto indent
+set shiftwidth=4 " # of spaces of auto indent
 set softtabstop=4 " # of spaces of <TAB> key
 set tabstop=4 " # of spaces erased when deleting a <TAB>
 set expandtab " Insert spaces instead of tabs
@@ -343,3 +360,10 @@ au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
+
+"""" fugitive shortcuts -------------------------------------------------------
+noremap <Leader>gs :Gstatus<cr>
+noremap <Leader>gc :Gcommit<cr>
+noremap <Leader>ga :Gwrite<cr>
+noremap <Leader>gl :Glog<cr>
+noremap <Leader>gb :Gblame<cr>
