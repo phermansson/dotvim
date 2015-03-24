@@ -43,7 +43,7 @@ NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'freitass/todo.txt-vim'
 NeoBundle 'godlygeek/tabular'
-NeoBundle 'kien/ctrlp.vim'
+"NeoBundle 'kien/ctrlp.vim'
 NeoBundle 'terryma/vim-multiple-cursors'
 
 NeoBundle 'kana/vim-operator-user'
@@ -52,25 +52,27 @@ NeoBundle 'vim-scripts/a.vim'
 NeoBundle 'gcmt/wildfire.vim'
 
 NeoBundle 'chriskempson/tomorrow-theme'
-NeoBundle 'mhinz/vim-signify'
-NeoBundle 'mhinz/vim-startify'
+"NeoBundle 'mhinz/vim-signify'
+"NeoBundle 'mhinz/vim-startify'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'tsukkee/unite-tag'
-NeoBundle 'minibufexpl.vim'
+"NeoBundle 'minibufexpl.vim'
 
-"NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'Shougo/neocomplcache'
 NeoBundle 'Shougo/neocomplete'
 NeoBundle 'Shougo/neosnippet'
 NeoBundle 'Shougo/unite-outline'
-
-NeoBundle 'ntpeters/vim-better-whitespace'
+NeoBundle 'bronson/vim-trailing-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'int3/vim-extradite'
 
-NeoBundle "davidhalter/jedi-vim"
+"NeoBundle "davidhalter/jedi-vim"
 NeoBundle 'xolox/vim-misc'
 NeoBundle 'xolox/vim-easytags'
+NeoBundle 'chrisbra/csv.vim'
+NeoBundle 'ivalkeen/vim-ctrlp-tjump'
+
 """ neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
 " Required:
@@ -82,15 +84,35 @@ let mapleader = ","
 set laststatus=2
 let g:airline_powerline_fonts = 1
 
+""" signify --------------------------------------------------------------------
+let g:signify_vcs_list = 1
+
+""" ctrlp ----------------------------------------------------------------------
+let g:ctrlp_working_path_mode = 'c'
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+" Open goto symbol on current buffer
+  nmap <c-r> :MyCtrlPTag<cr>
+  imap <c-r> <esc>:MyCtrlPTag<cr>
+
+  " Open goto symbol on all buffers
+  nmap <c-R> :CtrlPBufTagAll<cr>
+  imap <c-R> <esc>:CtrlPBufTagAll<cr>
+
+nnoremap <c-]> :CtrlPtjump<cr>
+vnoremap <c-]> :CtrlPtjumpVisual<cr>
+
+""" trailing whitespace --------------------------------------------------------
+let g:extra_whitespace_ignored_filetypes = ['unite']
+
 """ MiniBufExplorer ------------------------------------------------------------
 nnoremap <silent> <F3> :TMiniBufExplorer<CR>
-"let g:miniBufExplMapCTabSwitchBuffs = 1
-"let g:miniBufExplModSelTarget = 1
-"let g:miniBufExplorerMoreThanOne = 0
-"let g:miniBufExplModSelTarget = 0
-"let g:miniBufExplUseSingleClick = 1
-"let g:miniBufExplMapWindowNavVim = 1
-
 let g:miniBufExplModSelTarget = 1
 let g:miniBufExplorerMoreThanOne = 0
 let g:miniBufExplModSelTarget = 0
@@ -103,15 +125,9 @@ let g:miniBufExplSplitBelow=1
 nnoremap [unite] <Nop>
 nmap <Leader><Leader> [unite]
 
-"call unite#filters#matcher_default#use(['matcher_fuzzy'])
-call unite#filters#sorter_default#use(['sorter_rank'])
-call unite#custom#profile('files', 'filters', ['sorter_rank'])
-
-" Start insert mode in unite-action buffer.
-"call unite#custom#profile('action', 'context', {
-"  \ 'start_insert' : 1,
-"  \ 'smartcase' : 1
-"\ })
+call unite#filters#matcher_default#use(['matcher_fuzzy'])
+let g:unite_winwidth = 30
+let g:unite_winheight = 10
 
 nnoremap [unite]f :<C-u>Unite -start-insert file_rec/async:!<CR>
 
@@ -149,11 +165,6 @@ let g:unite_source_grep_recursive_opt = ''
 endif
 
 nnoremap [unite]ug :<C-u>Unite grep:.:-iIR:<CR>
-" Unite-gtags
-" let g:unite_source_gtags_project_config = {
-" \ '_': { 'treelize': 1 }
-" \ }
-" specify your project path as key.
 " '_' in key means default configuration.
 nnoremap [unite]gx :<C-u>Unite gtags/context<CR>
 nnoremap [unite]gr :<C-u>Unite gtags/ref<CR>
@@ -168,8 +179,13 @@ nnoremap [unite]gG :<C-u>Unite gtags/grep:
 nnoremap [unite]gC :<C-u>Unite gtags/completion:
 
 nnoremap [unite]gs :GtagsCursor<CR>
+nnoremap <C-p> :Unite file_rec/async<cr>
+nnoremap [unite]s :Unite -quick-match buffer<cr>
+nnoremap [unite]a :<C-u>Unite grep:.<CR>
+nnoremap [unite]A :<C-u>execute 'Unite grep:.::' . expand("<cword>") . ''<CR>
+map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -start-insert tag<cr>
 
-map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -auto-preview -start-insert tag<cr>
+nnoremap [unite]t :Unite tag -start-insert<CR>
 
 """ NerdCommenter --------------------------------------------------------------
 " Map <C-/> to toggle comment both in normal and visual mode
@@ -206,6 +222,7 @@ nmap <silent> <leader>gc :Gcommit<CR>
 nmap <silent> <leader>gd :Gdiff<CR>
 nmap <silent> <leader>gp :Git push<CR>
 nmap <silent> <leader>gs :Gstatus<CR>
+nmap <silent> <leader>gb :Gblame<CR>
 
 """ a.vim ----------------------------------------------------------------------
 map <silent> <C-Tab> :A<CR>
@@ -305,10 +322,10 @@ map <leader>tn :tabnew %<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 " Use ctrl-[hjkl] to select the active split!
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
+nmap <silent> <A-k> :wincmd k<CR>
+nmap <silent> <A-j> :wincmd j<CR>
+nmap <silent> <A-h> :wincmd h<CR>
+nmap <silent> <A-l> :wincmd l<CR>
 " Quickly edit/reload the vimrc file
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
