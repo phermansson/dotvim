@@ -35,43 +35,24 @@ NeoBundle 'Shougo/vimproc.vim',
   \ },
 \ }
 
-NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'hewes/unite-gtags'
 NeoBundle 'majutsushi/tagbar'
 NeoBundle 'scrooloose/nerdtree'
 
 NeoBundle 'flazz/vim-colorschemes'
-NeoBundle 'freitass/todo.txt-vim'
-NeoBundle 'godlygeek/tabular'
-"NeoBundle 'kien/ctrlp.vim'
-NeoBundle 'terryma/vim-multiple-cursors'
-
-NeoBundle 'kana/vim-operator-user'
-NeoBundle 'rhysd/vim-clang-format'
-NeoBundle 'vim-scripts/a.vim'
-NeoBundle 'gcmt/wildfire.vim'
 
 NeoBundle 'chriskempson/tomorrow-theme'
-"NeoBundle 'mhinz/vim-signify'
-"NeoBundle 'mhinz/vim-startify'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'tsukkee/unite-tag'
-"NeoBundle 'minibufexpl.vim'
-
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'Shougo/neocomplete'
-NeoBundle 'Shougo/neosnippet'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'bronson/vim-trailing-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kien/rainbow_parentheses.vim'
-NeoBundle 'int3/vim-extradite'
+NeoBundle 'klen/python-mode'
 
-"NeoBundle "davidhalter/jedi-vim"
-NeoBundle 'xolox/vim-misc'
-NeoBundle 'xolox/vim-easytags'
 NeoBundle 'chrisbra/csv.vim'
 NeoBundle 'ivalkeen/vim-ctrlp-tjump'
+NeoBundle 'rust-lang/rust.vim'
 
 """ neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
@@ -83,6 +64,37 @@ let mapleader = ","
 """ airline --------------------------------------------------------------------
 set laststatus=2
 let g:airline_powerline_fonts = 1
+
+""" python-mode ----------------------------------------------------------------
+
+let g:pymode_rope = 1
+
+" Documentation
+let g:pymode_doc = 1
+let g:pymode_doc_key = 'K'
+"
+" "Linting
+let g:pymode_lint = 1
+let g:pymode_lint_checker = "pyflakes,pep8,mccabe"
+" Auto check on save
+let g:pymode_lint_write = 1
+"
+" " Support virtualenv
+let g:pymode_virtualenv = 1
+"
+" " Enable breakpoints plugin
+let g:pymode_breakpoint = 1
+let g:pymode_breakpoint_bind = '<leader>b'
+"
+" " syntax highlighting
+let g:pymode_syntax = 1
+let g:pymode_syntax_all = 1
+let g:pymode_syntax_indent_errors = g:pymode_syntax_all
+let g:pymode_syntax_space_errors = g:pymode_syntax_all
+"
+" " Don't autofold code
+let g:pymode_folding = 0
+"
 
 """ signify --------------------------------------------------------------------
 let g:signify_vcs_list = 1
@@ -186,6 +198,72 @@ nnoremap [unite]A :<C-u>execute 'Unite grep:.::' . expand("<cword>") . ''<CR>
 map [unite]t :!~/packages/dotvim/make_tags<cr>:Unite -no-split -start-insert tag<cr>
 
 nnoremap [unite]t :Unite tag -start-insert<CR>
+
+nnoremap <Leader>gn :Unite output:echo\ system("git\ init")<CR>
+nnoremap <Leader>gs :Gstatus<CR>
+nnoremap <Leader>gw :Gwrite<CR>
+nnoremap <Leader>go :Gread<CR>
+nnoremap <Leader>gR :Gremove<CR>
+nnoremap <Leader>gm :Gmove<Space>
+nnoremap <Leader>gc :Gcommit<CR>
+nnoremap <Leader>gd :Gdiff<CR>
+nnoremap <Leader>gb :Gblame<CR>
+nnoremap <Leader>gB :Gbrowse<CR>
+nnoremap <Leader>gp :Git! push<CR>
+nnoremap <Leader>gP :Git! pull<CR>
+nnoremap <Leader>gi :Git!<Space>
+nnoremap <Leader>ge :Gedit<CR>
+nnoremap <Leader>gE :Gedit<Space>
+nnoremap <Leader>gl :exe "silent Glog <Bar> Unite -no-quit
+\ quickfix"<CR>:redraw!<CR>
+nnoremap <Leader>gL :exe "silent Glog -- <Bar> Unite -no-quit
+\ quickfix"<CR>:redraw!<CR>
+nnoremap <Leader>gt :!tig<CR>:redraw!<CR>
+nnoremap <Leader>gS :exe "silent !shipit"<CR>:redraw!<CR>
+nnoremap <Leader>gg :exe 'silent Ggrep -i '.input("Pattern: ")<Bar>Unite
+\ quickfix -no-quit<CR>
+nnoremap <Leader>ggm :exe 'silent Glog --grep='.input("Pattern: ").' <Bar>
+\Unite -no-quit quickfix'<CR>
+nnoremap <Leader>ggt :exe 'silent Glog -S='.input("Pattern: ").' <Bar>
+\Unite -no-quit quickfix'<CR>
+nnoremap <Leader>ggc :silent! Ggrep -i<Space>
+" for the diffmode
+noremap <Leader>du :diffupdate<CR>
+if !exists(":Gdiffoff")
+command Gdiffoff diffoff | q | Gedit
+endif
+noremap <Leader>dq :Gdiffoff<CR>
+" }}}
+" Gitv {{{
+nnoremap <silent> <leader>gv :Gitv --all<CR>
+nnoremap <silent> <leader>gV :Gitv! --all<CR>
+vnoremap <silent> <leader>gV :Gitv! --all<CR>
+let g:Gitv_OpenHorizontal = 'auto'
+let g:Gitv_WipeAllOnClose = 1
+let g:Gitv_DoNotMapCtrlKey = 1
+" let g:Gitv_WrapLines = 1
+autocmd FileType git set nofoldenable
+" }}}
+" GitHub dashboard {{{
+nnoremap <Leader>gD :exe 'GHD! '.input("Username: ")<CR>
+nnoremap <Leader>gA :exe 'GHA! '.input("Username or repository: ")<CR>
+function! GHDashboard (...)
+if &filetype == 'github-dashboard'
+" first variable is the statusline builder
+let builder = a:1
+call builder.add_section('airline_a', 'GitHub ')
+call builder.add_section('airline_b',
+\ ' %{get(split(get(split(github_dashboard#statusline(), " "),
+\ 1, ""), ":"), 0, "")} ')
+call builder.add_section('airline_c',
+\ ' %{get(split(get(split(github_dashboard#statusline(), " "),
+\ 2, ""), "]"), 0, "")} ')
+" tell the core to use the contents of the builder
+return 1
+endif
+endfunction
+autocmd FileType github-dashboard call airline#add_statusline_func('GHDashboard')
+
 
 """ NerdCommenter --------------------------------------------------------------
 " Map <C-/> to toggle comment both in normal and visual mode
