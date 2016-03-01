@@ -24,6 +24,10 @@ if system('uname -o') =~ '^GNU/'
 endif
 
 """ Bundles --------------------------------------------------------------------
+
+NeoBundle 'junegunn/vim-easy-align',       { 'on': ['<NeoBundle>(EasyAlign)', 'EasyAlign'] }
+NeoBundle 'junegunn/vim-github-dashboard', { 'on': ['GHDashboard', 'GHActivity']      }
+
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'Shougo/unite.vim'
@@ -38,9 +42,7 @@ NeoBundle 'Shougo/vimproc.vim',
 NeoBundle 'hewes/unite-gtags'
 NeoBundle 'majutsushi/tagbar'
 NeoBundle 'scrooloose/nerdtree'
-
 NeoBundle 'flazz/vim-colorschemes'
-
 NeoBundle 'chriskempson/tomorrow-theme'
 NeoBundle 'bling/vim-airline'
 NeoBundle 'tsukkee/unite-tag'
@@ -49,10 +51,19 @@ NeoBundle 'bronson/vim-trailing-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'klen/python-mode'
-
 NeoBundle 'chrisbra/csv.vim'
 NeoBundle 'ivalkeen/vim-ctrlp-tjump'
 NeoBundle 'rust-lang/rust.vim'
+NeoBundle 'junegunn/limelight.vim'
+NeoBundle 'FelikZ/ctrlp-py-matcher'
+NeoBundle 'gerw/vim-latex-suite'
+
+NeoBundle 'vim-erlang/vim-erlang-runtime'
+NeoBundle 'vim-erlang/vim-erlang-tags'
+NeoBundle 'vim-erlang/vim-erlang-compiler'
+NeoBundle 'vim-erlang/vim-erlang-omnicomplete'
+
+NeoBundle 'sickill/vim-monokai'
 
 """ neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
@@ -99,6 +110,10 @@ let g:pymode_folding = 0
 """ signify --------------------------------------------------------------------
 let g:signify_vcs_list = 1
 
+""" Do not override term colorsheme -------------------------------------
+hi Normal ctermbg=none
+highlight NonText ctermbg=none
+
 """ ctrlp ----------------------------------------------------------------------
 let g:ctrlp_working_path_mode = 'c'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
@@ -133,13 +148,32 @@ let g:miniBufExplMapWindowNavVim = 1
 let g:miniBufExplVSplit = 25
 let g:miniBufExplSplitBelow=1
 
+""" Limelight ------------------------------------------------------------------
+let g:limelight_conceal_ctermfg = 'darkgray'
+
 """ Unite ----------------------------------------------------------------------
 nnoremap [unite] <Nop>
 nmap <Leader><Leader> [unite]
-
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
-let g:unite_winwidth = 30
-let g:unite_winheight = 10
+call unite#filters#sorter_default#use(['sorter_rank'])
+
+let g:unite_source_history_yank_enable = 1
+let g:unite_force_overwrite_statusline = 0
+if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+    let g:unite_source_grep_recursive_opt = ''
+endif
+
+call unite#custom_source('file_rec,file_rec/async,file_mru,file,buffer,grep',
+    \ 'ignore_pattern', join([
+        \ '\.git/',
+        \ '\.sass-cache/',
+        \ '\.tmp/',
+        \ '\vendor/',
+        \ '\node_modules/',
+    \ ], '\|'))
+
 
 nnoremap [unite]f :<C-u>Unite -start-insert file_rec/async:!<CR>
 
@@ -400,16 +434,17 @@ map <leader>tn :tabnew %<cr>
 map <leader>tc :tabclose<cr>
 map <leader>tm :tabmove
 " Use ctrl-[hjkl] to select the active split!
-nmap <silent> <A-k> :wincmd k<CR>
-nmap <silent> <A-j> :wincmd j<CR>
-nmap <silent> <A-h> :wincmd h<CR>
-nmap <silent> <A-l> :wincmd l<CR>
+nmap <silent> <C-k> :wincmd k<CR>
+nmap <silent> <C-j> :wincmd j<CR>
+nmap <silent> <C-h> :wincmd h<CR>
+nmap <silent> <C-l> :wincmd l<CR>
 " Quickly edit/reload the vimrc file
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 """ Appearance ----------------------------------------------------------------
 syntax on
+hi Visual term=reverse cterm=reverse guibg=Grey
 set encoding=utf8
 set hlsearch
 if has("gui_macvim")
@@ -441,6 +476,9 @@ set softtabstop=4 " # of spaces of <TAB> key
 set tabstop=4 " # of spaces erased when deleting a <TAB>
 set expandtab " Insert spaces instead of tabs
 set smarttab " 'siftwidth' in front of a line
+set noswapfile     " No swap files
+set nobackup       " No backups
+set nowritebackup
 
 """ Vim-Indent-Guides ---------------------------------------------------------
 let g:indent_guides_auto_colors = 0
@@ -456,9 +494,62 @@ au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
-"""" fugitive shortcuts -------------------------------------------------------
+""" latex mode --------------------------------------------------------------
+filetype indent on
+filetype plugin on
+filetype on
+let g:tex_flavor='latex'
+set grepprg=grep\ -nH\ $*
+let g:Tex_Folding=0 "I don't like folding.
+set iskeyword+=:
+
+
+""" fugitive shortcuts -------------------------------------------------------
 noremap <Leader>gs :Gstatus<cr>
 noremap <Leader>gc :Gcommit<cr>
 noremap <Leader>ga :Gwrite<cr>
 noremap <Leader>gl :Glog<cr>
 noremap <Leader>gb :Gblame<cr>
+
+function! SetupCtrlP()
+    nnoremap <silent> <C-n> :CtrlPBuffer<CR>
+    nnoremap <silent> <C-m> :CtrlP<CR>
+
+    let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden
+          \ --ignore .git
+          \ --ignore .svn
+          \ --ignore .hg
+          \ --ignore .DS_Store
+          \ --ignore "*.pyc"
+          \ --ignore "*~"
+          \ -g ""'
+
+    let g:ctrlp_clear_cache_on_exit = 0
+    let g:ctrlp_lazy_update = 250
+    let g:ctrlp_max_files = 0
+    let g:ctrlp_max_height = 30
+    let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+    let g:ctrlp_match_window_bottom = 0
+    let g:ctrlp_match_window_reversed = 0
+    let g:ctrlp_switch_buffer = 0
+endfunction
+call SetupCtrlP()
+
+" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+"
+" " Start interactive EasyAlign for a motion/text object (e.g. <Leader>aip)
+nmap <Leader>a <Plug>(EasyAlign)
+
+function! GFM()
+let langs = ['vim', 'c', 'cpp']
+
+for lang in langs
+unlet b:current_syntax
+silent! exec printf("syntax include @%s syntax/%s.vim", lang, lang)
+exec printf("syntax region %sSnip matchgroup=Snip start='```%s' end='```' contains=@%s",
+             \ lang, lang, lang)
+endfor
+let b:current_syntax='mkd'
+syntax sync fromstart
+endfunction
