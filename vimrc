@@ -1,5 +1,6 @@
 
 """ Setup-neo-bundle -----------------------------------------------------------
+
 let neoBundleReadMe=expand('~/.vim/bundle/neobundle.vim/README.md')
 if !filereadable(neoBundleReadMe)
   echo "Fetch and install NeoBundle...\n"
@@ -57,6 +58,7 @@ NeoBundle 'rust-lang/rust.vim'
 NeoBundle 'junegunn/limelight.vim'
 NeoBundle 'FelikZ/ctrlp-py-matcher'
 NeoBundle 'gerw/vim-latex-suite'
+NeoBundle 'scrooloose/syntastic'
 
 NeoBundle 'vim-erlang/vim-erlang-runtime'
 NeoBundle 'vim-erlang/vim-erlang-tags'
@@ -65,6 +67,7 @@ NeoBundle 'vim-erlang/vim-erlang-omnicomplete'
 
 NeoBundle 'sickill/vim-monokai'
 
+NeoBundle 'Lokaltog/vim-easymotion'
 """ neo-bundle-settings --------------------------------------------------------
 call neobundle#end()
 " Required:
@@ -72,7 +75,58 @@ filetype plugin indent on
 NeoBundleCheck
 let mapleader = ","
 
+""" general -------------------------------------------------------------------
+
+syntax on
+
+hi Visual term=reverse cterm=reverse guibg=Grey
+set encoding=utf8 fileencoding=utf-8
+set hlsearch
+set undolevels=500
+set undoreload=2000
+set undodir=~/.vim/undo
+set undofile
+set backup
+set backupcopy=yes
+set backupdir=~.vim/backup
+
+set tabstop=4
+set shiftwidth=4
+set softtabstop=4
+set expandtab
+set shiftround
+set smarttab
+
+set autoindent
+set copyindent
+set smartindent
+
+set go+=a
+
+set ignorecase
+set smartcase
+set incsearch
+set gdefault
+set hlsearch
+
+set ttyfast
+set ttyscroll=3
+
+set confirm
+
+set history=5000
+set magic
+
+set textwidth=120
+
+set backspace=2
+
+if has("gui_macvim")
+    set guifont=Menlo:h12
+endif
+
 """ airline --------------------------------------------------------------------
+
 set laststatus=2
 let g:airline_powerline_fonts = 1
 
@@ -107,9 +161,6 @@ let g:pymode_syntax_space_errors = g:pymode_syntax_all
 let g:pymode_folding = 0
 "
 
-""" signify --------------------------------------------------------------------
-let g:signify_vcs_list = 1
-
 """ Do not override term colorsheme -------------------------------------
 hi Normal ctermbg=none
 highlight NonText ctermbg=none
@@ -136,22 +187,18 @@ nnoremap <c-]> :CtrlPtjump<cr>
 vnoremap <c-]> :CtrlPtjumpVisual<cr>
 
 """ trailing whitespace --------------------------------------------------------
+
 let g:extra_whitespace_ignored_filetypes = ['unite']
 
-""" MiniBufExplorer ------------------------------------------------------------
-nnoremap <silent> <F3> :TMiniBufExplorer<CR>
-let g:miniBufExplModSelTarget = 1
-let g:miniBufExplorerMoreThanOne = 0
-let g:miniBufExplModSelTarget = 0
-let g:miniBufExplUseSingleClick = 1
-let g:miniBufExplMapWindowNavVim = 1
-let g:miniBufExplVSplit = 25
-let g:miniBufExplSplitBelow=1
+""" synactic --------------------------------------------------------
 
-""" Limelight ------------------------------------------------------------------
-let g:limelight_conceal_ctermfg = 'darkgray'
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
 
 """ Unite ----------------------------------------------------------------------
+
 nnoremap [unite] <Nop>
 nmap <Leader><Leader> [unite]
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -298,18 +345,18 @@ endif
 endfunction
 autocmd FileType github-dashboard call airline#add_statusline_func('GHDashboard')
 
+""" EasyMotion------------------------------------------------------------------
 
-""" NerdCommenter --------------------------------------------------------------
-" Map <C-/> to toggle comment both in normal and visual mode
-nmap  <plug>NERDCommenterToggle
-vmap  <plug>NERDCommenterToggle
+map <C-e> <Plug>(easymotion-prefix)
 
 """ Easytags -------------------------------------------------------------------
+
 let g:easytags_cmd = "gtags"
 let g:easytags_dynamic_files = 1
 let g:easytags_async = 1
 
 """ Tabularize -----------------------------------------------------------------
+
 nmap <silent> <leader>a= :<C-u>Tabularize /=<CR>
 vmap <silent> <leader>a= :<C-u>Tabularize /=<CR>
 nmap <silent> <leader>a: :<C-u>Tabularize /:<CR>
@@ -320,15 +367,19 @@ nmap <silent> <leader>a, :<C-u>Tabularize /,<CR>
 vmap <silent> <leader>a, :<C-u>Tabularize /,<CR>
 
 """ NerdTree -------------------------------------------------------------------
+
 nnoremap <silent> <F2> :NERDTreeToggle<CR>
 ":let NERDTreeQuitOnOpen = 1
+
 """ Tagbar ---------------------------------------------------------------------
+
 let g:tagbar_sort = 0 " Display tags the same order they appear in the source file
 let g:tagbar_width = 30 " Set Tagbar window width to 30
 let g:tagbar_autofocus = 1 " Change the focus to the Tagbar window whenever it is opened
 nnoremap <silent> <F9> :TagbarToggle<CR>
 
 """ Fugitive -------------------------------------------------------------------
+
 set diffopt=filler,vertical
 nmap <silent> <leader>gc :Gcommit<CR>
 nmap <silent> <leader>gd :Gdiff<CR>
@@ -337,6 +388,7 @@ nmap <silent> <leader>gs :Gstatus<CR>
 nmap <silent> <leader>gb :Gblame<CR>
 
 """ a.vim ----------------------------------------------------------------------
+
 map <silent> <C-Tab> :A<CR>
 " When editing a file, always jump to the last known cursor position.
 " Don't do it when the position is invalid or when inside an event handler
@@ -347,6 +399,7 @@ autocmd BufReadPost *
 \ endif
 
 """ Gtags-find -----------------------------------------------------------------
+
 let search_max = 20
 if exists("$GTAGSGLOBAL") || exists(":global")
   if exists("vimrc_debug") && vimrc_debug == 1
@@ -364,7 +417,7 @@ if exists("$GTAGSGLOBAL") || exists(":global")
       break
     elseif s:dir == '/'
       break
-    else
+  else
       let s:dir = fnamemodify(s:dir, ":h")
       let i += 1
     endif
@@ -372,7 +425,8 @@ if exists("$GTAGSGLOBAL") || exists(":global")
 endif
 
 """ Cscope-settings ------------------------------------------------------------
- if filereadable("GTAGS")
+
+if filereadable("GTAGS")
      set csprg=gtags-cscope
      cs add GTAGS
  elseif filereadable("cscope.out")
@@ -423,6 +477,7 @@ endif
  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
 """ Basic-keybindings  --------------------------------------------------------
+
 command Bd bp | sp | bn | bd
 
 nmap <Leader>n  :MBEbp<CR>
@@ -442,15 +497,6 @@ nmap <silent> <C-l> :wincmd l<CR>
 nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-""" Appearance ----------------------------------------------------------------
-syntax on
-hi Visual term=reverse cterm=reverse guibg=Grey
-set encoding=utf8
-set hlsearch
-if has("gui_macvim")
-set guifont=Menlo:h12
-endif
-
 """ Color-scheme --------------------------------------------------------------
 if $COLORTERM == 'gnome-terminal'
 set t_Co=256
@@ -458,53 +504,25 @@ endif
 set background=dark
 colorscheme Tomorrow-Night
 
-""" Basic-settings ------------------------------------------------------------
-set backspace=indent,eol,start
-set history=50 " keep 50 lines of command line history
-set ruler " show the cursor position all the time
-set showcmd " display incomplete commands
-set incsearch " do incremental searching
-set nobackup " Disable the creation of backup files (the ones ending with ~)
-set mouse=a " enable mouse 'all'
-set number " line numbers
-set scrolloff=1 " Keep the cursor away from top/bottom
-set wildmode=longest,list " TAB completion (such as bash)
-set laststatus=2 " Always show a status bar
-set smartcase " Ignore case when search pattern is all lowercase
-set shiftwidth=4 " # of spaces of auto indent
-set softtabstop=4 " # of spaces of <TAB> key
-set tabstop=4 " # of spaces erased when deleting a <TAB>
-set expandtab " Insert spaces instead of tabs
-set smarttab " 'siftwidth' in front of a line
-set noswapfile     " No swap files
-set nobackup       " No backups
-set nowritebackup
-
-""" Vim-Indent-Guides ---------------------------------------------------------
-let g:indent_guides_auto_colors = 0
-let g:indent_guides_guide_size = 1
-let g:indent_guides_start_level = 2
-highlight IndentGuidesOdd ctermbg=236 guibg=#3a3a3a
-highlight IndentGuidesEven ctermbg=236 guibg=#3a3a3a
-au VimEnter * :IndentGuidesEnable
-
 """ Vim-Rainbow-Parentheses ---------------------------------------------------
+
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
 """ latex mode --------------------------------------------------------------
+
 filetype indent on
 filetype plugin on
 filetype on
 let g:tex_flavor='latex'
-set grepprg=grep\ -nH\ $*
-let g:Tex_Folding=0 "I don't like folding.
+let g:Tex_Folding=0
 set iskeyword+=:
 
 
 """ fugitive shortcuts -------------------------------------------------------
+
 noremap <Leader>gs :Gstatus<cr>
 noremap <Leader>gc :Gcommit<cr>
 noremap <Leader>ga :Gwrite<cr>
@@ -553,3 +571,7 @@ endfor
 let b:current_syntax='mkd'
 syntax sync fromstart
 endfunction
+
+""" ---------------------------------------------------------------------------
+
+
