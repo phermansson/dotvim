@@ -45,7 +45,9 @@ NeoBundle 'majutsushi/tagbar'
 NeoBundle 'scrooloose/nerdtree'
 NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'chriskempson/tomorrow-theme'
-NeoBundle 'bling/vim-airline'
+NeoBundle 'junegunn/seoul256.vim'
+NeoBundle 'vim-airline/vim-airline'
+NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'bronson/vim-trailing-whitespace'
@@ -129,6 +131,8 @@ endif
 
 set laststatus=2
 let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_theme = 'luna'
 
 """ python-mode ----------------------------------------------------------------
 
@@ -502,7 +506,7 @@ if $COLORTERM == 'gnome-terminal'
 set t_Co=256
 endif
 set background=dark
-colorscheme Tomorrow-Night
+colorscheme seoul256
 
 """ Vim-Rainbow-Parentheses ---------------------------------------------------
 
