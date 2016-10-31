@@ -50,7 +50,7 @@ NeoBundle 'vim-airline/vim-airline'
 NeoBundle 'vim-airline/vim-airline-themes'
 NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'Shougo/unite-outline'
-NeoBundle 'bronson/vim-trailing-whitespace'
+NeoBundle 'ntpeters/vim-better-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'kien/rainbow_parentheses.vim'
 NeoBundle 'klen/python-mode'
@@ -61,16 +61,18 @@ NeoBundle 'junegunn/limelight.vim'
 NeoBundle 'FelikZ/ctrlp-py-matcher'
 NeoBundle 'gerw/vim-latex-suite'
 NeoBundle 'scrooloose/syntastic'
-
+NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'vim-erlang/vim-erlang-runtime'
 NeoBundle 'vim-erlang/vim-erlang-tags'
 NeoBundle 'vim-erlang/vim-erlang-compiler'
 NeoBundle 'vim-erlang/vim-erlang-omnicomplete'
 
 NeoBundle 'sickill/vim-monokai'
-
+NeoBundle 'airblade/vim-gitgutter'
 NeoBundle 'Lokaltog/vim-easymotion'
-""" neo-bundle-settings --------------------------------------------------------
+NeoBundle 'lyuts/vim-rtags'
+
+""" neo-bun dle-settings --------------------------------------------------------
 call neobundle#end()
 " Required:
 filetype plugin indent on
@@ -81,17 +83,13 @@ let mapleader = ","
 
 syntax on
 
-hi Visual term=reverse cterm=reverse guibg=Grey
+hi Visual term=reverse cterm=reverse
 set encoding=utf8 fileencoding=utf-8
 set hlsearch
 set undolevels=500
-set undoreload=2000
-set undodir=~/.vim/undo
-set undofile
 set backup
 set backupcopy=yes
 set backupdir=~.vim/backup
-
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
@@ -111,9 +109,6 @@ set incsearch
 set gdefault
 set hlsearch
 
-set ttyfast
-set ttyscroll=3
-
 set confirm
 
 set history=5000
@@ -127,12 +122,14 @@ if has("gui_macvim")
     set guifont=Menlo:h12
 endif
 
-""" airline --------------------------------------------------------------------
+""" Better-Whitespace ----------------------------------------------------------
 
+highlight ExtraWhitespace ctermbg=red
+""" airline --------------------------------------------------------------------
 set laststatus=2
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
-let g:airline_theme = 'luna'
+let g:airline_theme = 'base16_monokai'
 
 """ python-mode ----------------------------------------------------------------
 
@@ -168,6 +165,7 @@ let g:pymode_folding = 0
 """ Do not override term colorsheme -------------------------------------
 hi Normal ctermbg=none
 highlight NonText ctermbg=none
+hi Normal guifg=White guibg=Black
 
 """ ctrlp ----------------------------------------------------------------------
 let g:ctrlp_working_path_mode = 'c'
@@ -480,7 +478,23 @@ if filereadable("GTAGS")
  nmap <C-@><C-@>i :vert scs find i ^<C-R>=expand("<cfile>")<CR>$<CR>
  nmap <C-@><C-@>d :vert scs find d <C-R>=expand("<cword>")<CR><CR>
 
-""" Basic-keybindings  --------------------------------------------------------
+" ‣ Vim-RTags
+" "   Details at: https://github.com/lyuts/vim-rtags
+ let g:rtagsUseDefaultMappings = 0
+ noremap <Leader>ri :call rtags#SymbolInfo()<CR>             |   "" Symbol info
+ noremap <Leader>rj :call rtags#JumpTo()<CR>                 |   "" Follow location
+ noremap <Leader>rS :call rtags#JumpTo(" ")<CR>              |   "" Follow location (open in horizontal split)
+ noremap <Leader>rV :call rtags#JumpTo("vert")<CR>           |   "" Follow location (open in vertical split)
+ noremap <Leader>rT :call rtags#JumpTo("tab")<CR>            |   "" Follow location open in a new tab
+ noremap <Leader>rp :call rtags#JumpToParent()<CR>           |   "" Jump to parent
+ noremap <Leader>rf :call rtags#FindRefs()<CR>               |   "" Find references
+ noremap <Leader>rr :call rtags#ReindexFile()<CR>            |   "" Reindex current file
+ noremap <Leader>rl :call rtags#ProjectList()<CR>            |   "" List all available projects
+ noremap <Leader>rw :call rtags#RenameSymbolUnderCursor()<CR>|   "" Rename symbol under cursor
+ noremap <Leader>rv :call rtags#FindVirtuals()<CR>           |   "" Find virtuals
+ noremap <Leader>rb :call rtags#JumpBack()<CR> | "" Jump to previous location
+
+ """ Basic-keybindings  --------------------------------------------------------
 
 command Bd bp | sp | bn | bd
 
@@ -502,11 +516,10 @@ nmap <silent> <leader>ev :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
 """ Color-scheme --------------------------------------------------------------
-if $COLORTERM == 'gnome-terminal'
-set t_Co=256
-endif
+""
+""set t_Co=256
 set background=dark
-colorscheme seoul256
+colorscheme Dev_Delight
 
 """ Vim-Rainbow-Parentheses ---------------------------------------------------
 
@@ -577,5 +590,3 @@ syntax sync fromstart
 endfunction
 
 """ ---------------------------------------------------------------------------
-
-
